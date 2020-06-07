@@ -10,7 +10,7 @@ from sources.Word2VecNew.DialogWord2Vec import Ui_Word2VecDialog as DialogWord2V
 from sources.common.plot.TsneMplForWidget import TsneMplForWidget
 from sources.common.plot.PlotMaker import PlotMaker
 
-from sklearn.manifold import TSNE
+
 import matplotlib
 matplotlib.use('Qt5Agg')
 
@@ -92,11 +92,13 @@ class DialogWord2VecMaker(QDialog, DialogWord2Vec):
             root_path + 'weight_matrix_epoch' + str(epoch) + '.txt')
         self.createLogTextEdit.append("Данные за эпоху " + str(epoch) + " сохранены по адресу output/Word2Vec")
         
-    def visualise_model(self):
+    def visualise_model(self, algorithm):
         self.selectModelBtn.setEnabled(False)
         self.visualizeGBox.setEnabled(False)
 
         X = self.calculator.model.wv[self.calculator.model.wv.vocab]
+        
+        # Отображение tsne 
         RS = 2500 # Random state
         tsne = TSNE(n_components=2, perplexity = 40, random_state=RS)
         result = tsne.fit_transform(X)
