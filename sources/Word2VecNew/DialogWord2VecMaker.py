@@ -195,6 +195,8 @@ class DialogWord2VecMaker(QDialog, DialogWord2Vec):
         modelFile = getFilenameFromUserSelection("MODEL Files (*.model)", self.output_dir + 'Word2Vec')
         if modelFile != None and len(modelFile.split('/')) > 0:
             self.visualizeLogTextEdit.clear()
+            if (self.makePlot):
+                self.clear_plots_layout()
             self.set_enable_visualisation(modelFile)
 
     def show_word_on_plot(self):
