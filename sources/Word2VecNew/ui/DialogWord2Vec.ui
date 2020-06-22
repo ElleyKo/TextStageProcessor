@@ -12,8 +12,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1042</width>
-    <height>682</height>
+    <width>1027</width>
+    <height>614</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -44,9 +44,9 @@
   <property name="modal">
    <bool>false</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <layout class="QVBoxLayout" name="mainAVLaout">
      <item>
       <widget class="QTabWidget" name="tabWidget">
        <property name="font">
@@ -56,7 +56,7 @@
         </font>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="modelCreatorTab">
         <attribute name="title">
@@ -676,9 +676,9 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="retrainModelBtn">
+              <widget class="QPushButton" name="recreateModelBtn">
                <property name="text">
-                <string>Переобучить модель</string>
+                <string>Пересоздать модель</string>
                </property>
               </widget>
              </item>
@@ -701,6 +701,9 @@
                <height>0</height>
               </size>
              </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
           </layout>
@@ -713,7 +716,7 @@
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
-          <layout class="QVBoxLayout" name="visualizeVLayout">
+          <layout class="QHBoxLayout" name="visualizeHLayout">
            <item>
             <layout class="QVBoxLayout" name="visualAlgorithmVLayout">
              <item>
@@ -773,7 +776,7 @@
                     </property>
                     <property name="minimumSize">
                      <size>
-                      <width>0</width>
+                      <width>348</width>
                       <height>30</height>
                      </size>
                     </property>
@@ -810,7 +813,13 @@
               </widget>
              </item>
              <item>
+              <layout class="QHBoxLayout" name="plotBtnHLayout"/>
+             </item>
+             <item>
               <widget class="QGroupBox" name="visualizeGBox">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -819,7 +828,7 @@
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>0</width>
+                 <width>500</width>
                  <height>63</height>
                 </size>
                </property>
@@ -830,71 +839,150 @@
                 </size>
                </property>
                <property name="title">
-                <string>Визуализировать</string>
+                <string>Алгоритмы визуализации</string>
                </property>
                <layout class="QHBoxLayout" name="btnHLayout">
                 <property name="sizeConstraint">
                  <enum>QLayout::SetFixedSize</enum>
                 </property>
                 <item>
-                 <widget class="QPushButton" name="tsneBtn">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
+                 <widget class="QRadioButton" name="pcaTSNERadioBtn">
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>120</width>
                     <height>30</height>
                    </size>
                   </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="text">
-                   <string>Алгоритм t-SNE</string>
+                   <string>PCA и t-SNE</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="tsnePDABtn">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
+                 <widget class="QRadioButton" name="tsvdTSNERadioBtn">
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>178</width>
                     <height>30</height>
                    </size>
                   </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="text">
-                   <string>Алгоритм PDA и t-SNE</string>
+                   <string> TruncatedSVD и t-SNE</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pdaBtn">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
+                 <widget class="QRadioButton" name="tsvdRadioBtn">
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>120</width>
                     <height>30</height>
                    </size>
                   </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>110</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="text">
-                   <string>Алгоритм PDA</string>
+                   <string> TruncatedSVD</string>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="pcaRadioBtn">
+                  <property name="minimumSize">
+                   <size>
+                    <width>60</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>PCA</string>
                   </property>
                  </widget>
                 </item>
                </layout>
               </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="searchOnlyHLayout">
+               <item>
+                <widget class="QCheckBox" name="searchOnlyCheck">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="text">
+                  <string>Отобразить только результаты поиска</string>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="searchOnlyHSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="visualizeBtnHLayout">
+               <property name="spacing">
+                <number>6</number>
+               </property>
+               <property name="sizeConstraint">
+                <enum>QLayout::SetMaximumSize</enum>
+               </property>
+               <item>
+                <widget class="QPushButton" name="visualizeBtn">
+                 <property name="text">
+                  <string>Визуализировать</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="clearBtn">
+                 <property name="text">
+                  <string>Очистить область</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
               <layout class="QVBoxLayout" name="plotVLayout">
@@ -908,11 +996,11 @@
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>0</width>
+                   <width>400</width>
                    <height>0</height>
                   </size>
                  </property>
-                 <layout class="QVBoxLayout" name="mplvl">
+                 <layout class="QVBoxLayout" name="mplvl_2">
                   <property name="spacing">
                    <number>2</number>
                   </property>
@@ -940,6 +1028,21 @@
              <property name="spacing">
               <number>6</number>
              </property>
+             <property name="sizeConstraint">
+              <enum>QLayout::SetFixedSize</enum>
+             </property>
+             <property name="leftMargin">
+              <number>5</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>5</number>
+             </property>
+             <property name="bottomMargin">
+              <number>5</number>
+             </property>
              <item>
               <widget class="QGroupBox" name="searchQueryGBox">
                <property name="enabled">
@@ -954,17 +1057,20 @@
                <property name="minimumSize">
                 <size>
                  <width>300</width>
-                 <height>80</height>
+                 <height>110</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>65</height>
+                 <height>16777215</height>
                 </size>
                </property>
                <property name="title">
                 <string>Поиск слова</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_9">
                 <property name="spacing">
@@ -979,6 +1085,51 @@
                 <property name="topMargin">
                  <number>8</number>
                 </property>
+                <property name="bottomMargin">
+                 <number>9</number>
+                </property>
+                <item>
+                 <layout class="QHBoxLayout" name="topNHLayout">
+                  <property name="sizeConstraint">
+                   <enum>QLayout::SetMinimumSize</enum>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="topNLbl">
+                    <property name="text">
+                     <string>Количество похожих слов в выборке (top n)</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSpinBox" name="topNField">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>110</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="minimum">
+                     <number>1</number>
+                    </property>
+                    <property name="maximum">
+                     <number>150</number>
+                    </property>
+                    <property name="value">
+                     <number>15</number>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
                 <item>
                  <layout class="QHBoxLayout" name="searchQueryHLayout">
                   <item>
@@ -1023,8 +1174,11 @@
                <property name="maximumSize">
                 <size>
                  <width>16777215</width>
-                 <height>150</height>
+                 <height>16777215</height>
                 </size>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1040,9 +1194,6 @@
    </item>
   </layout>
  </widget>
- <tabstops>
-  <tabstop>tabWidget</tabstop>
- </tabstops>
  <resources/>
  <connections/>
 </ui>

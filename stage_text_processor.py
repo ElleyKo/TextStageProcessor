@@ -50,7 +50,6 @@ class MainWindow(QMainWindow):
         self.initUI()
         self.texts = []
 
-
     def initUI(self):
         button_clasterization = QPushButton("Кластеризация")
         button_clasterization.setMinimumHeight(32)
@@ -198,12 +197,10 @@ class MainWindow(QMainWindow):
 
     def makeFastText(self):
         print("FastText")
-        filename = getFilenameFromUserSelection("Text file (*.txt);;Model file (*.model)", input_dir)
-        if (filename != None):
-            dialogFastTextMaker = DialogFastTextMaker(input_dir, filename, morph, configurations, self)
-            self.hide()
-            dialogFastTextMaker.destroyed.connect(self.show)
-            dialogFastTextMaker.exec_()
+        dialogFastTextMaker = DialogFastTextMaker(input_dir, morph, configurations, self)
+        self.hide()
+        dialogFastTextMaker.destroyed.connect(self.show)
+        dialogFastTextMaker.exec_()
 
 
 if __name__ == '__main__':

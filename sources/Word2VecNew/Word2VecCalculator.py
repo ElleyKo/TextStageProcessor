@@ -16,8 +16,11 @@ import sources.TextPreprocessing as textproc
 from sources.classification.clsf_util import makeFileListLib
 from sources.utils import makePreprocessingForAllFilesInFolder, clear_dir
 
-from gensim.models import Word2Vec
 import gensim
+from gensim.models import Word2Vec
+from gensim.models.phrases import Phrases, Phraser
+
+from sources.common.helpers.PathHelpers import get_filename_from_path
 
 
 class Word2VecCalculatorSignals(QObject):
@@ -48,17 +51,36 @@ class Word2VecCalculator(QThread):
         handler = EpochCallbackHandler(
             self.iter, self.signals.Progress, self.signals.ProgressBar)
         # sg тип алгоритма для тренировки 0 - CBOW, 1 - skip-gram 
-        self.model = Word2Vec(data, size=self.size, alpha=self.learn_rate, sg=self.sg,
+        self.model = Word2Vec(size=self.size, alpha=self.learn_rate, sg=self.sg,
                               min_count=self.min_count, iter=self.iter, window=self.window,
                               ns_exponent=self.ns_exponent, negative=self.negative, workers=4,
                               callbacks=[handler])
+        self.signals.ProgressBar.emit(10)
+        phrases = Phrases(data, min_count=self.min_count + 10, progress_per=10000)
+        bigram = Phraser(phrases)
+        sentences = bigram[data]
+        self.model.build_vocab(sentences, progress_per=10000)
+        self.signals.PrintInfo.emit('Словарь Word2Vec создан.')
+        self.signals.PrintInfo.emit('Тренируем модель Word2Vec {0} эпох.'.format(self.iter))
+        self.model.train(sentences, total_examples=self.model.corpus_count, epochs=self.iter, report_delay=1)
+        self.signals.PrintInfo.emit('Модель Word2Vec прошла обучение.')
         self.model.callbacks = ()
-        self.signals.PrintInfo.emit('Рассчеты закончены!')
+        self.signals.PrintInfo.emit('Расчеты закончены!')
         self.signals.Finished.emit()
         self.signals.ProgressBar.emit(100)
 
-    def search_word(self, word: str):
-        return self.model.wv.most_similar(positive=[word], negative=None, topn=20)
+    def buildVocabWord2Vec(self, sentences):
+        self.calculator.model.build_vocab(sentences, progress_per=10000)
+    
+    def trainWord2Vec(self, sentences):
+        self.calculator.model.train(
+            sentences, 
+            total_examples=self.calculator.model.corpus_count, 
+            epochs=10, 
+            report_delay=1)
+
+    def search_word(self, word, topn):
+        return self.model.wv.most_similar(positive=[word], topn=topn)
 
     def _load_file_data(self, input_file: str):
         with open(input_file, 'r', encoding='UTF-8') as file:
