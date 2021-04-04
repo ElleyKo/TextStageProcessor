@@ -27,8 +27,8 @@ class Ui_Word2VecDialog(object):
         font.setPointSize(14)
         Word2VecDialog.setFont(font)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("w2v_image.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        Word2VecDialog.setWindowIcon(icon)
+        icon.addPixmap(QtGui.QPixmap("img/w2v_image.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Word2VecDialog.setWindowIcon(QtGui.QIcon(icon))
         Word2VecDialog.setModal(False)
         self.horizontalLayout = QtWidgets.QHBoxLayout(Word2VecDialog)
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -489,7 +489,7 @@ class Ui_Word2VecDialog(object):
         self.horizontalLayout.addLayout(self.mainAVLaout)
 
         self.retranslateUi(Word2VecDialog)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(Word2VecDialog)
 
     def retranslateUi(self, Word2VecDialog):

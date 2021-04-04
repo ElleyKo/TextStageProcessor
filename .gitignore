@@ -1,6 +1,7 @@
 *.pyc
 *.csv
 venv
+.vs/*
 .vscode/*
 .idea/*
 /output_files/Word2Vec

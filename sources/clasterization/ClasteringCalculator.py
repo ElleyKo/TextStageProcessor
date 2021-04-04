@@ -25,6 +25,7 @@ from sklearn.preprocessing import Normalizer
 from sources.TextPreprocessing import writeStringToFile, makePreprocessing, makeFakePreprocessing, \
     getCompiledFromSentencesText
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sources.classification.clsf_util import *
 
 
 # Сигналы для потока вычисления
@@ -51,6 +52,10 @@ class ClasteringCalculator(QThread):
 
         self.need_preprocessing = False
         self.need_tf_idf = True
+        self.tf_idf_norm = "l2"
+        self.tf_idf_is_smooth_idf = False
+        self.tf_idf_sublinear_tf = False
+        self.need_tf_idf_formula = False
         self.first_call = True
         self.texts = []
 
@@ -106,9 +111,44 @@ class ClasteringCalculator(QThread):
         self.signals.UpdateProgressBar.emit(100)
         self.signals.Finished.emit()
 
+    '''
+    Рассчет матрицы tf*idf с использованием формулы Wij/||Wij||
+    '''
+    def calculate_and_write_tf_idf_formula(self, out_filename, input_texts):
+        words_list = []
+        for text in input_texts:
+            words_list.append(text.split())
+        tf_idf_matrix, unique_words = makeTFIDF(words_list)
+        matrix_output_s = 'Слово'
+        for filename in self.short_filenames:
+            matrix_output_s += (';' + filename)
+        matrix_output_s += ('; Сумма')
+        matrix_output_s += '\n'
+        tf_idf_matrix = np.transpose(np.array(tf_idf_matrix))
+        total = []
+        for row in range(tf_idf_matrix.shape[0]):
+            current_total = np.sum(tf_idf_matrix[row]).round(4)
+            total.append((current_total, tf_idf_matrix[row], unique_words[row]))
+
+        total.sort(key=lambda tup: tup[0], reverse=True)
+
+        for row in range(len(total)):
+            current_total = total[row]
+            current_row = current_total[1]
+            current_feature_name = current_total[2]
+            matrix_output_s += current_feature_name
+            for cell in range(current_row.shape[0]):
+                matrix_output_s += ('; ' + str(current_row[cell]))
+            matrix_output_s += ('; ' + str(current_total[0]))
+            matrix_output_s += '\n'
+        writeStringToFile(matrix_output_s, out_filename)
+        result_msg = "Матрица TF-IDF записана: " + out_filename
+
+        return result_msg
+
     # Рассчет и запись матрицы TF-IDF
-    def calculate_and_write_tf_idf(self, out_filename, input_texts):
-        idf_vectorizer = TfidfVectorizer()
+    def calculate_and_write_tf_idf(self, out_filename, input_texts, norm='l2', is_smooth_idf=True, sublinear_tf=False):
+        idf_vectorizer = TfidfVectorizer(smooth_idf=is_smooth_idf, norm=norm, sublinear_tf=sublinear_tf)
         tf_idf_matrix = idf_vectorizer.fit_transform(input_texts)
         feature_names = idf_vectorizer.get_feature_names()
 
@@ -166,7 +206,13 @@ class ClasteringCalculator(QThread):
         if self.need_tf_idf:
             self.signals.PrintInfo.emit("Расчет TF-IDF...")
             idf_filename = output_dir + 'tf_idf.csv'
-            msg = self.calculate_and_write_tf_idf(idf_filename, input_texts)
+            msg = self.calculate_and_write_tf_idf(idf_filename, input_texts, self.tf_idf_norm, self.tf_idf_is_smooth_idf, self.tf_idf_sublinear_tf)
+            self.signals.PrintInfo.emit(msg)
+        
+        if self.need_tf_idf_formula:
+            self.signals.PrintInfo.emit("Расчет TF-IDF по формуле на изображении...")
+            idf_filename = output_dir + 'tf_idf_formula.csv'
+            msg = self.calculate_and_write_tf_idf_formula(idf_filename, input_texts)
             self.signals.PrintInfo.emit(msg)
 
         vectorizer = CountVectorizer()
@@ -212,7 +258,13 @@ class ClasteringCalculator(QThread):
         if self.need_tf_idf:
             self.signals.PrintInfo.emit("Расчет TF-IDF...")
             idf_filename = output_dir + 'tf_idf.csv'
-            msg = self.calculate_and_write_tf_idf(idf_filename, input_texts)
+            msg = self.calculate_and_write_tf_idf(idf_filename, input_texts, self.tf_idf_norm, self.tf_idf_is_smooth_idf, self.tf_idf_sublinear_tf)
+            self.signals.PrintInfo.emit(msg)
+
+        if self.need_tf_idf_formula:
+            self.signals.PrintInfo.emit("Расчет TF-IDF по формуле на изображении...")
+            idf_filename = output_dir + 'tf_idf_formula.csv'
+            msg = self.calculate_and_write_tf_idf_formula(idf_filename, input_texts)
             self.signals.PrintInfo.emit(msg)
 
         vectorizer = CountVectorizer()
@@ -261,7 +313,13 @@ class ClasteringCalculator(QThread):
         if self.need_tf_idf:
             self.signals.PrintInfo.emit("Расчет TF-IDF...")
             idf_filename = output_dir + 'tf_idf.csv'
-            msg = self.calculate_and_write_tf_idf(idf_filename, input_texts)
+            msg = self.calculate_and_write_tf_idf(idf_filename, input_texts, self.tf_idf_norm, self.tf_idf_is_smooth_idf, self.tf_idf_sublinear_tf)
+            self.signals.PrintInfo.emit(msg)
+
+        if self.need_tf_idf_formula:
+            self.signals.PrintInfo.emit("Расчет TF-IDF по формуле на изображении...")
+            idf_filename = output_dir + 'tf_idf_formula.csv'
+            msg = self.calculate_and_write_tf_idf_formula(idf_filename, input_texts)
             self.signals.PrintInfo.emit(msg)
 
         vectorizer = CountVectorizer()
@@ -299,7 +357,13 @@ class ClasteringCalculator(QThread):
         if self.need_tf_idf:
             self.signals.PrintInfo.emit("Расчет TF-IDF...")
             idf_filename = output_dir + 'tf_idf.csv'
-            msg = self.calculate_and_write_tf_idf(idf_filename, input_texts)
+            msg = self.calculate_and_write_tf_idf(idf_filename, input_texts, self.tf_idf_norm, self.tf_idf_is_smooth_idf, self.tf_idf_sublinear_tf)
+            self.signals.PrintInfo.emit(msg)
+
+        if self.need_tf_idf_formula:
+            self.signals.PrintInfo.emit("Расчет TF-IDF по формуле на изображении...")
+            idf_filename = output_dir + 'tf_idf_formula.csv'
+            msg = self.calculate_and_write_tf_idf_formula(idf_filename, input_texts)
             self.signals.PrintInfo.emit(msg)
 
         vectorizer = CountVectorizer()
@@ -337,7 +401,13 @@ class ClasteringCalculator(QThread):
         if self.need_tf_idf:
             self.signals.PrintInfo.emit("Расчет TF-IDF...")
             idf_filename = output_dir + 'tf_idf.csv'
-            msg = self.calculate_and_write_tf_idf(idf_filename, input_texts)
+            msg = self.calculate_and_write_tf_idf(idf_filename, input_texts, self.tf_idf_norm, self.tf_idf_is_smooth_idf, self.tf_idf_sublinear_tf)
+            self.signals.PrintInfo.emit(msg)
+
+        if self.need_tf_idf_formula:
+            self.signals.PrintInfo.emit("Расчет TF-IDF по формуле на изображении...")
+            idf_filename = output_dir + 'tf_idf_formula.csv'
+            msg = self.calculate_and_write_tf_idf_formula(idf_filename, input_texts)
             self.signals.PrintInfo.emit(msg)
 
         vectorizer = CountVectorizer()
@@ -377,7 +447,13 @@ class ClasteringCalculator(QThread):
         if self.need_tf_idf:
             self.signals.PrintInfo.emit("Расчет TF-IDF...")
             idf_filename = output_dir + 'tf_idf.csv'
-            msg = self.calculate_and_write_tf_idf(idf_filename, input_texts)
+            msg = self.calculate_and_write_tf_idf(idf_filename, input_texts, self.tf_idf_norm, self.tf_idf_is_smooth_idf, self.tf_idf_sublinear_tf)
+            self.signals.PrintInfo.emit(msg)
+
+        if self.need_tf_idf_formula:
+            self.signals.PrintInfo.emit("Расчет TF-IDF по формуле на изображении...")
+            idf_filename = output_dir + 'tf_idf_formula.csv'
+            msg = self.calculate_and_write_tf_idf_formula(idf_filename, input_texts)
             self.signals.PrintInfo.emit(msg)
 
         vectorizer = CountVectorizer()
@@ -421,7 +497,13 @@ class ClasteringCalculator(QThread):
         if self.need_tf_idf:
             self.signals.PrintInfo.emit("Расчет TF-IDF...")
             idf_filename = output_dir + 'tf_idf.csv'
-            msg = self.calculate_and_write_tf_idf(idf_filename, input_texts)
+            msg = self.calculate_and_write_tf_idf(idf_filename, input_texts, self.tf_idf_norm, self.tf_idf_is_smooth_idf, self.tf_idf_sublinear_tf)
+            self.signals.PrintInfo.emit(msg)
+
+        if self.need_tf_idf_formula:
+            self.signals.PrintInfo.emit("Расчет TF-IDF по формуле на изображении...")
+            idf_filename = output_dir + 'tf_idf_formula.csv'
+            msg = self.calculate_and_write_tf_idf_formula(idf_filename, input_texts)
             self.signals.PrintInfo.emit(msg)
 
         vectorizer = CountVectorizer()

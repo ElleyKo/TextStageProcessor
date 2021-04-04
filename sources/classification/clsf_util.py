@@ -174,25 +174,25 @@ def makeTFIDF(data_train, data_test = None):
         df_doc.append(all_words.count(word))
     df_doc = np.array(df_doc)
     
-    
+    data_tf = data_train
     if data_test:
-        data_tf = data_train + data_test
+        data_tf += data_test
     tf = []
+    w = []
+    D = len(data_train)
     for doc in data_tf:
         tfi = []
         for word in uniq_words:
             tfi.append(doc.count(word))
         tf.append(tfi)
-    
-    
-    D = len(data_train)
-    
-    tfidf = []
-    for tfi in tf:
-        w = np.array(tfi) * np.log10(D / df_doc)
-        row = w / normVec(w)
-        tfidf.append(row.round(2).tolist())
-    
+        w.append(np.array(tfi) * np.log10(D / df_doc))
+
+    tfidf = []    
+    normW = normVec(w)
+    for wi in w:
+        row = wi / normW
+        tfidf.append(row.round(4).tolist())  
+
     return(tfidf, uniq_words)
     
 def addClassToTFIDF(matrix, vector):

@@ -37,7 +37,7 @@ def loadInputFilesFromList(input_files_list):
     texts = []
     for filename in input_files_list:
         text_data = TextData(filename)
-        text_data.original_sentences = readSentencesFromInputText(filename)
+        text_data.original_sentences = readSentencesFromInputText(filename, input_dir_name)
         texts.append(text_data)
 
     return texts
@@ -52,7 +52,7 @@ def loadInputFiles(input_dir_name):
     texts = []
     for filename in input_filenames:
         text_data = TextData(filename)
-        text_data.original_sentences = readSentencesFromInputText(filename, input_dir_name)
+        text_data.original_sentences = readSentencesFromInputText(filename, None)
         texts.append(text_data)
 
     return texts
@@ -129,7 +129,7 @@ def tokenizeTextData(texts, configurations = None):
 
 
 # Записывает/перезаписывает строку любой длины c переносами (data_str) в файл (filename)
-def writeStringToFile(data_str, filename, strict_utf8_encoding=False):
+def writeStringToFile(data_str, filename, strict_utf8_encoding=True):
     try:
         if(strict_utf8_encoding):
             with open(filename, 'w', encoding='utf-8') as out_text_file:
@@ -163,15 +163,12 @@ def wordSurnameDetector(word, results):
 
 # Удаляет СТОП-СЛОВа (Предлоги, союзы и тд.)
 def removeStopWordsFromSentences(sentences, morph, configurations):
-
     minimal_word_size = configurations.get("minimal_word_size", 3)
     cut_ADJ = configurations.get("cut_ADJ", False)
     for sentence in sentences:
         i = 0
-
         while i < len(sentence):
             current_word = sentence[i]
-
             if len(current_word) < minimal_word_size or current_word.isalpha() == False:
                  sentence.pop(i)
                  i = i - 1
@@ -426,6 +423,15 @@ def makePreprocessing(filenames, morph, configurations, additional_output=None):
     # Приведение регистра (все слова с маленькой буквы за исключением ФИО)
     checkAdditionalOutput(additional_output,'3) Приведение регистра.\n')
     texts, log_string = fixRegisterInTexts(texts, morph)
+    # Сохраняем файлы для будущего пропуска этапа препроцессинга
+    #preprocessed_arr = log_string.split("Text:")
+    #preprocessed_arr.pop(0)
+    #for (idx, t) in enumerate(preprocessed_arr):
+    #    a = t.split("\n ")
+    #    name = a[0]
+    #    a.pop(0)
+    #    changed = "\n".join(a)
+    #    writeStringToFile(changed, output_dir + name.replace('.txt', '') + '_preprocessed.txt', True)
     writeStringToFile(log_string.replace('\n ', '\n'), output_dir + 'output_stage_3.txt')
 
     # Подсчет частоты слов в тексте

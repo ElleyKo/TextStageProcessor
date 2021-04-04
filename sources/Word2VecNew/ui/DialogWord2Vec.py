@@ -489,7 +489,7 @@ class Ui_Word2VecDialog(object):
         self.horizontalLayout.addLayout(self.mainAVLaout)
 
         self.retranslateUi(Word2VecDialog)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(Word2VecDialog)
 
     def retranslateUi(self, Word2VecDialog):
