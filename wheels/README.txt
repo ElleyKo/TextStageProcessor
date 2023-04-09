@@ -1,6 +1,9 @@
 В случае проблем с пакетом fasttext, установить файл .whl через cmd:
 pip install fasttext-0.9.2-cp37-cp37m-win_amd64.whl
 
+Для python 3.8.X и системы x64 используем текст
+pip install fasttext-0.9.2-cp38-cp38-win_amd64.whl
+
 Если версия Python не 3.7.X или система не x64 - установить подходящий .whl-файл:
 https://www.lfd.uci.edu/~gohlke/pythonlibs/#fasttext
 
