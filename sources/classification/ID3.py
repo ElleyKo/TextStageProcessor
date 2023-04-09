@@ -15,7 +15,20 @@ import pymorphy2
 # falseFiles = os.listdir(directoryFalse)
 # testFiles = os.listdir(directoryTest)
 ############################################
-category = []
+
+##########################################
+# Тесты на наборе China ошибки и баги(приколы и фиксы ещё) by stigGGGer
+# Корректно работает если убрать из файла 5.txt любое упоминание Японии
+# Возможно нужно учитывать ложные данные или "выбросы"
+# Смешанные параметры сбивают веса
+############################################
+
+
+
+
+#TODO глобавльные переменные - это некорректная структура модуля! Переделать в класс, поля или внутренние переменные, 
+# либо в функциональном стиле, переделать в возвращаемые функции
+category = [] 
 trueFiles = []
 falseFiles=[]
 testFiles = []
@@ -25,7 +38,8 @@ testFilesName = []
 input_dir1 = ''
 
 def Classification_Text_ID3(input_dir,output_dir, trainingSet, trainingClass, testSet):
-
+    #TODO глобавльные переменные - это некорректная структура модуля! Переделать в класс, поля или внутренние переменные, 
+    # либо в функциональном стиле, переделать в возвращаемые функции
     global category
     global trueFiles
     global falseFiles
@@ -35,25 +49,35 @@ def Classification_Text_ID3(input_dir,output_dir, trainingSet, trainingClass, te
     global testFilesName
     global input_dir1
 
-    tree_file = output_dir + 'tree.txt'
-    result_file = output_dir + 'result.txt'
-    category = sorted(list(set(trainingClass)))
+    tree_file = output_dir + 'tree.txt' #указаны выходные файлы (что это делает в классификаторе непонятно)
+    result_file = output_dir + 'result.txt'  #указаны выходные файлы (что это делает в классификаторе непонятно)
+    category = sorted(list(set(trainingClass))) #сортировка категорий
     input_dir1 = input_dir
     testFiles = testSet
 
+    #раздаление файлов по категориям из папки
     for i in range(len(trainingSet)):
        if  trainingClass[i] == category[0]:
            trueFiles.append(trainingSet[i])
        else:
            falseFiles.append(trainingSet[i])
 
+    #составление словаря
     Words = words()
+    #обоработка списка слов из словаря
     list_words_in_file = Analysis_of_words(Words)
+    #применение алгоритма ID3
     applyID3(tree_file,Words,list_words_in_file)
-    testTrue = []
-    testFalse = []
+
+    testTrue = [] #положительные узлы
+    testFalse = [] #отрицательные узлы
     lastWord = ' '
     i = 0
+
+
+    '''
+    обработка файлов дерева и составление списков узлов + и -    
+    '''
     for f in testFiles:
         arr = list(set(f))
         with open(tree_file) as tree:
@@ -78,6 +102,11 @@ def Classification_Text_ID3(input_dir,output_dir, trainingSet, trainingClass, te
                         a = s1[0]
                         lastWord = a
                         continue
+
+
+    '''
+    Запись результатов в файл, делит результаты по категориям
+    '''
     res = open(result_file,'w')
 
     for i in range(len(testTrue)):
@@ -93,6 +122,8 @@ def Classification_Text_ID3(input_dir,output_dir, trainingSet, trainingClass, te
         res.write(str('\n\t' + testFalse[i]))
         print(str('\t' + testFalse[i]))
     res.close()
+
+    #обнуление переменных...??
     category = []
     trueFiles = []
     falseFiles = []
@@ -103,7 +134,13 @@ def Classification_Text_ID3(input_dir,output_dir, trainingSet, trainingClass, te
     input_dir1 = ''
 
 def words():
+    '''
+    Формирование словаря слов
+    '''
     Words = {}
+
+    #TODO глобавльные переменные - это некорректная структура модуля! Переделать в класс, поля или внутренние переменные, 
+    # либо в функциональном стиле, переделать в возвращаемые функции
     global category
     global trueFiles
     global falseFiles
@@ -113,12 +150,14 @@ def words():
     global testFilesName
     global input_dir1
 
+    #Обработка положительных узлов
     for f in trueFiles:
         arr = list(set(f))
         for s in arr:
             if s not in Words:  Words[s] = [0,1,0.0]
             else: Words[s][1]+=1
 
+    #Обработка отрицательных узлов
     for f in falseFiles:
         arr = f
         arr = list(set(arr))
@@ -128,6 +167,13 @@ def words():
     return Words
 
 def Analysis_of_words(Words):
+    '''
+    Работа со словарем из файлов
+    @param Words
+    '''
+    
+    #TODO глобавльные переменные - это некорректная структура модуля! Переделать в класс, поля или внутренние переменные, 
+    # либо в функциональном стиле, переделать в возвращаемые функции
     global category
     global trueFiles
     global falseFiles
@@ -141,6 +187,7 @@ def Analysis_of_words(Words):
     list_words_in_files = {}
     cells = []
 
+    #работа с файлами. Несколько папок, они четко разделяют файлы по категориям. Число категорий == числу папок
     trueFilesName = os.listdir(input_dir1 + '/train/' + category[0])
     falseFilesName = os.listdir(input_dir1 + '/train/' + category[1])
     testFilesName = sorted(os.listdir(input_dir1 + '/test/' + category[0]) +  os.listdir(input_dir1 + '/test/' + category[1]))
@@ -168,6 +215,12 @@ def Analysis_of_words(Words):
     return list_words_in_files
 
 def ParseAttributes2(Words,list_words_in_file):
+    '''
+    Проверка наличия словаря в файлах
+    '''
+
+    #TODO глобавльные переменные - это некорректная структура модуля! Переделать в класс, поля или внутренние переменные, 
+    # либо в функциональном стиле, переделать в возвращаемые функции
     global category
     global trueFiles
     global falseFiles
@@ -191,9 +244,13 @@ def ParseAttributes2(Words,list_words_in_file):
     #testnum = len(trueFiles) + len(falseFiles)
     for s in justList.keys():
         tests.append(justList[s])
-    return [attrnum, sorted(attrnames), attr, tests, num]
+    return [attrnum, sorted(attrnames), attr, tests, num] #возвращает массив параметров?? размер словаря, отсортированные аттрибуты, аттрибуты, тестовая выборка, размер словаря -1 
 
 def entropy(tests,num):
+    '''
+    Расчет энтропии в тестовой выборке
+    '''
+    
     import math
     def log2(x): return math.log(x)/math.log(2)
     neg = float(len(list(filter(lambda x:(x[num]==0),tests))))
@@ -203,16 +260,26 @@ def entropy(tests,num):
     return -(neg/tot)*log2(neg/tot)-((tot-neg)/tot)*log2(((tot-neg)/tot))
 
 def gain(tests,attrnum,num):
+    '''
+    Расчет целевого признака в тестовой выборке
+    '''
     res = 0
     for i in range(2):
         arr = list(filter(lambda x:(x[attrnum]==i),tests))
         res += entropy(arr,num)*len(arr)/float(len(tests))
-        # A = entropy(tests,num)-res
+        print(entropy(tests,num)-res)
+        print()        
     return entropy(tests,num)-res
 
 def ID3(tests,num,f,tabnum,usedattr,attrnames,attr):
+    '''
+    Сам алгоритм
+    '''
     mas = ['', '', '', '', ]
     def findgains(x):
+        '''
+        Проверка наличия целевого признака
+        '''
         if usedattr[x]: return 0
         return gain(tests,x,num)
     if (len(tests)==0):
@@ -243,12 +310,15 @@ def ID3(tests,num,f,tabnum,usedattr,attrnames,attr):
         ID3(arrneg, num, f, tabnum + 1, newusedattr, attrnames, attr)
 
 def applyID3(outfname,Words,list_words_in_file):
-    bigarr = ParseAttributes2(Words,list_words_in_file)
-    attrnum, attrnames, attr, tests, num = bigarr[0], bigarr[1], bigarr[2], bigarr[3], bigarr[4]
-    f = open(outfname, 'w')
+    '''
+    Применение ID3?
+    '''
+    bigarr = ParseAttributes2(Words,list_words_in_file) #распределение обучающей выборки (проверка наличия словаря в файлах)
+    attrnum, attrnames, attr, tests, num = bigarr[0], bigarr[1], bigarr[2], bigarr[3], bigarr[4] #заносим всё в переменные
+    f = open(outfname, 'w') #открыть файл на запись
     usedattr = []
     for i in range(attrnum): usedattr.append(i == num)
-    ID3(tests, attrnum - 1, f, 0, usedattr, attrnames, attr)
+    ID3(tests, attrnum - 1, f, 0, usedattr, attrnames, attr) #проверка алгоритма ID3
 
 ########TEST############
 
