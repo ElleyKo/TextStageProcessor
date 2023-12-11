@@ -222,11 +222,11 @@ class LsaCalculator(QThread):
             dtm = vectorizer.fit_transform(self.input_texts)
 
             pre_svd_matrix = pd.DataFrame(dtm.toarray(), index=self.short_filenames,
-                                          columns=vectorizer.get_feature_names()).head(10)
+                                          columns=vectorizer.get_feature_names_out()).head(10)
             pre_svd_matrix_filename = self.output_dir + 'pre_svd_matrix.csv'
             pre_svd_matrix.to_csv(pre_svd_matrix_filename, sep=";", decimal=',')
             self.signals.PrintInfo.emit('Файл с матрицей [слова * документы] для ЛСА:' + pre_svd_matrix_filename)
-            features_count = len(vectorizer.get_feature_names())
+            features_count = len(vectorizer.get_feature_names_out())
             self.signals.PrintInfo.emit('Уникальных слов:' + str(features_count))
 
             self.signals.UpdateProgressBar.emit(50)
