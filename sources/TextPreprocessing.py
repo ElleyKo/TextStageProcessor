@@ -132,10 +132,10 @@ def tokenizeTextData(texts, configurations = None):
 def writeStringToFile(data_str, filename, strict_utf8_encoding=True):
     try:
         if(strict_utf8_encoding):
-            with open(filename, 'w', encoding='utf-8') as out_text_file:
+            with open(filename, 'a', encoding='utf-8') as out_text_file:
                 out_text_file.write(data_str)
         else:
-            with open(filename, 'w') as out_text_file:
+            with open(filename, 'a') as out_text_file:
                 out_text_file.write(data_str)
     except PermissionError:
         print("ERROR!", "NO ACCESS TO FILE:", filename, ' - CLOSE OTHER APPLICATIONS')
