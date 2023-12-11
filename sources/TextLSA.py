@@ -157,7 +157,7 @@ class LsaCalculator(QThread):
         self.signals.UpdateProgressBar.emit(0)
         xs = []
         ys = []
-        similarity = []
+        similarity = np.empty(10, dtype=int)
 
 
         output_dir = self.configurations.get("output_files_directory", "output_files") + "/preprocessing/"
@@ -212,7 +212,7 @@ class LsaCalculator(QThread):
         else:
             # Добавим русские стоп-слова
             russian_stop_words = []
-            with open(stop_words_filename) as f:
+            with open(stop_words_filename, encoding="utf-8") as f:
                 russian_stop_words = f.readlines()
             russian_stop_words = [x.strip() for x in russian_stop_words]
 
@@ -282,6 +282,7 @@ class LsaCalculator(QThread):
 
         self.signals.PrintInfo.emit('Рассчеты закончены!')
         self.signals.UpdateProgressBar.emit(100)
+        # print([xs, ys, similarity, self.short_filenames])
         self.signals.Finished.emit(xs, ys, similarity, self.short_filenames)
 
 
