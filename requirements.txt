@@ -10,6 +10,6 @@ pyqt5-plugins==5.15.9.2.3
 scikit_learn>=0.21.2
 pymorphy2-dicts-ru>=2.4
 pymorphy2-dicts>=2.4
-fasttext>=0.9.2
+# fasttext>=0.9.2
 nltk<=3.5
 stopwords<=0.1.3
