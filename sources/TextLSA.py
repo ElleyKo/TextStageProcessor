@@ -157,7 +157,7 @@ class LsaCalculator(QThread):
         self.signals.UpdateProgressBar.emit(0)
         xs = []
         ys = []
-        similarity = np.empty(10, dtype=int)
+        similarity = []
 
 
         output_dir = self.configurations.get("output_files_directory", "output_files") + "/preprocessing/"
@@ -212,7 +212,7 @@ class LsaCalculator(QThread):
         else:
             # Добавим русские стоп-слова
             russian_stop_words = []
-            with open(stop_words_filename, encoding="utf-8") as f:
+            with open(stop_words_filename) as f:
                 russian_stop_words = f.readlines()
             russian_stop_words = [x.strip() for x in russian_stop_words]
 
@@ -222,11 +222,11 @@ class LsaCalculator(QThread):
             dtm = vectorizer.fit_transform(self.input_texts)
 
             pre_svd_matrix = pd.DataFrame(dtm.toarray(), index=self.short_filenames,
-                                          columns=vectorizer.get_feature_names_out()).head(10)
+                                          columns=vectorizer.get_feature_names()).head(10)
             pre_svd_matrix_filename = self.output_dir + 'pre_svd_matrix.csv'
             pre_svd_matrix.to_csv(pre_svd_matrix_filename, sep=";", decimal=',')
             self.signals.PrintInfo.emit('Файл с матрицей [слова * документы] для ЛСА:' + pre_svd_matrix_filename)
-            features_count = len(vectorizer.get_feature_names_out())
+            features_count = len(vectorizer.get_feature_names())
             self.signals.PrintInfo.emit('Уникальных слов:' + str(features_count))
 
             self.signals.UpdateProgressBar.emit(50)
@@ -282,7 +282,6 @@ class LsaCalculator(QThread):
 
         self.signals.PrintInfo.emit('Рассчеты закончены!')
         self.signals.UpdateProgressBar.emit(100)
-        # print([xs, ys, similarity, self.short_filenames])
         self.signals.Finished.emit(xs, ys, similarity, self.short_filenames)
 
 

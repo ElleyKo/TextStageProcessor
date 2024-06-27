@@ -118,7 +118,7 @@ def makePreprocessingForAllFilesInFolder(configurations,
     # Подсчет частоты слов в тексте
     print('4) Расчет частотной таблицы слов.')
     texts, log_string = calculateWordsFrequencyInTexts(texts)
-    writeStringToFile(log_string.replace('\n ', '\n'), output_log_dir + '/output_stage_4.csv')
+    writeStringToFile(log_string.replace('\n ', '\n'), output_log_dir + '/output_stage_4.csv', False)
 
     for text in texts:
         text_filename = output_files_dir + text.short_filename

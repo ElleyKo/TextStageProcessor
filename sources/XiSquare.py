@@ -157,7 +157,7 @@ class XiCalculator(QThread):
             # Подсчет частоты слов в тексте
             self.signals.PrintInfo.emit('4) Расчет частотной таблицы слов.')
             self.texts, log_string = calculateWordsFrequencyInTexts(self.texts)
-            writeStringToFile(log_string.replace('\n ', '\n'), output_dir + 'output_stage_4.csv')
+            writeStringToFile(log_string.replace('\n ', '\n'), output_dir + 'output_stage_4.csv',False)
 
             self.signals.UpdateProgressBar.emit(45)
         else:

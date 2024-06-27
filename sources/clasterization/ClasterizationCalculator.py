@@ -289,7 +289,7 @@ class ClasterizationCalculator(QThread):
         df_string = df_string + "Слово;Используется в документах\n"
         for key, value in t_all.items():
             df_string = df_string + key + ';' + str(value).replace('.',',') + '\n'
-        writeStringToFile(df_string.replace('\n ', '\n'), output_dir + 'df.csv')
+        writeStringToFile(df_string.replace('\n ', '\n'), output_dir + 'df.csv',False)
 
         self.signals.UpdateProgressBar.emit(25)
 
@@ -330,7 +330,7 @@ class ClasterizationCalculator(QThread):
                 W_string = W_string + ';' + str(round(item, 10)).replace('.',',')
             W_string += '\n'
             i += 1
-        writeStringToFile(W_string.replace('\n ', '\n'), output_dir + 'W.csv')
+        writeStringToFile(W_string.replace('\n ', '\n'), output_dir + 'W.csv', False)
         self.signals.UpdateProgressBar.emit(50)
         S = GetS(W)
         sim_string = ''
@@ -342,7 +342,7 @@ class ClasterizationCalculator(QThread):
             for j in range(len(t_all)):
                 sim_string = sim_string + ';' + str(S[i][j]).replace('.',',')
             sim_string += '\n'
-        writeStringToFile(sim_string.replace('\n ', '\n'), output_dir + 'sim.csv')
+        writeStringToFile(sim_string.replace('\n ', '\n'), output_dir + 'sim.csv', False)
         self.signals.UpdateProgressBar.emit(60)
         n = len(texts)
         m = len(texts)
@@ -366,7 +366,7 @@ class ClasterizationCalculator(QThread):
             for j in range(len(texts)):
                 dist_string = dist_string + ';' + str(round(S[i][j], 2)).replace('.',',')
             dist_string += '\n'
-        writeStringToFile(dist_string.replace('\n ', '\n'), output_dir + 'dist.csv')
+        writeStringToFile(dist_string.replace('\n ', '\n'), output_dir + 'dist.csv', False)
         self.signals.UpdateProgressBar.emit(70)
         doc2cluster = [0 for x in range(len(texts))]
         for i in range(len(texts)):
@@ -426,8 +426,8 @@ class ClasterizationCalculator(QThread):
 
             S = new_sim
         self.signals.UpdateProgressBar.emit(85)
-        writeStringToFile(result.replace('\n ', '\n'), output_dir + 'stepsDist.csv')
-        writeStringToFile(clustersString.replace('\n ', '\n'), output_dir + 'clusters.csv')
+        writeStringToFile(result.replace('\n ', '\n'), output_dir + 'stepsDist.csv', False)
+        writeStringToFile(clustersString.replace('\n ', '\n'), output_dir + 'clusters.csv', False)
         self.signals.UpdateProgressBar.emit(90)
         # Find unions with Sim
         F = [1 for x in range(len(texts))]
@@ -465,7 +465,7 @@ class ClasterizationCalculator(QThread):
 
             S = new_sim
 
-        writeStringToFile(result.replace('\n ', '\n'), output_dir + 'stepsSim.csv')
+        writeStringToFile(result.replace('\n ', '\n'), output_dir + 'stepsSim.csv', False)
 
         # for i in range(len(texts)):
         #     self.signals.PrintInfo.emit(str(doc2cluster[i])+'\n')
@@ -505,7 +505,7 @@ class ClasterizationCalculator(QThread):
         df_string = df_string + "Слово;Используется в документах\n"
         for key, value in t_all.items():
             df_string = df_string + key + ';' + str(value) + '\n'
-        writeStringToFile(df_string.replace('\n ', '\n'), output_dir + 'df.csv')
+        writeStringToFile(df_string.replace('\n ', '\n'), output_dir + 'df.csv', False)
         self.signals.UpdateProgressBar.emit(25)
 
         W = [[0 for x in range(len(t_all))] for y in range(len(texts))]
@@ -548,7 +548,7 @@ class ClasterizationCalculator(QThread):
                 W_string = W_string + ';' + str(round(item, 10)).replace('.',',')
             W_string += '\n'
             i += 1
-        writeStringToFile(W_string.replace('\n ', '\n'), output_dir + 'W.csv')
+        writeStringToFile(W_string.replace('\n ', '\n'), output_dir + 'W.csv', False)
 
         S = GetS(W)
         sim_string = ''
@@ -560,7 +560,7 @@ class ClasterizationCalculator(QThread):
             for j in range(len(t_all)):
                 sim_string = sim_string + ';' + str(S[i][j]).replace('.',',')
             sim_string += '\n'
-        writeStringToFile(sim_string, output_dir + 'sim.csv')
+        writeStringToFile(sim_string, output_dir + 'sim.csv', False)
 
         n = len(texts)
         m = len(texts)
@@ -585,7 +585,7 @@ class ClasterizationCalculator(QThread):
             for j in range(len(texts)):
                 dist_string = dist_string + ';' + str(round(S[i][j], 2)).replace('.',',')
             dist_string += '\n'
-        writeStringToFile(dist_string.replace('\n ', '\n'), output_dir + 'dist.csv')
+        writeStringToFile(dist_string.replace('\n ', '\n'), output_dir + 'dist.csv', False)
         self.signals.UpdateProgressBar.emit(75)
         # Проверим для каждого уровня
         centroidCount = ClusterCount
@@ -784,7 +784,7 @@ class ClasterizationCalculator(QThread):
         df_string = df_string + "Слово;Используется в документах\n"
         for key, value in t_all.items():
             df_string = df_string + key + ';' + str(value) + '\n'
-        writeStringToFile(df_string.replace('\n ', '\n'), output_dir + 'df.csv')
+        writeStringToFile(df_string.replace('\n ', '\n'), output_dir + 'df.csv', False)
 
         W = [[0 for x in range(len(t_all))] for y in range(len(texts))]
         print('len(texts)=' + str(len(texts)))
@@ -826,7 +826,7 @@ class ClasterizationCalculator(QThread):
                 W_string = W_string + ';' + str(round(item, 10)).replace('.',',')
             W_string += '\n'
             i += 1
-        writeStringToFile(W_string.replace('\n ', '\n'), output_dir + 'W.csv')
+        writeStringToFile(W_string.replace('\n ', '\n'), output_dir + 'W.csv', False)
         self.signals.UpdateProgressBar.emit(25)
 
         # Проверим для каждого уровня
@@ -950,8 +950,8 @@ class ClasterizationCalculator(QThread):
                     return
                 # print('continue iterations ')
         self.signals.UpdateProgressBar.emit(100)
-        writeStringToFile(result, output_dir + 'steps.csv')
-        writeStringToFile(clusters.replace('\n ', '\n'), output_dir + 'clusters.csv')
+        writeStringToFile(result, output_dir + 'steps.csv', False)
+        writeStringToFile(clusters.replace('\n ', '\n'), output_dir + 'clusters.csv', False)
         self.signals.PrintInfo.emit('Кластеризация Нечёткий алгоритм с-средних завершена' + '\n')
 
     def makeDBSCANClasterization(self,eps, minPts):
@@ -989,7 +989,7 @@ class ClasterizationCalculator(QThread):
         df_string = df_string + "Слово;Используется в документах\n"
         for key, value in t_all.items():
             df_string = df_string + key + ';' + str(value) + '\n'
-        writeStringToFile(df_string.replace('\n ', '\n'), output_dir + 'df.csv')
+        writeStringToFile(df_string.replace('\n ', '\n'), output_dir + 'df.csv', False)
 
         W = [[0 for x in range(len(t_all))] for y in range(len(texts))]
         print('len(texts)=' + str(len(texts)))
@@ -1034,7 +1034,7 @@ class ClasterizationCalculator(QThread):
                 W_string = W_string + ';' + str(round(item, 10)).replace('.',',')
             W_string += '\n'
             i += 1
-        writeStringToFile(W_string.replace('\n ', '\n'), output_dir + 'W.csv')
+        writeStringToFile(W_string.replace('\n ', '\n'), output_dir + 'W.csv', False)
         self.signals.UpdateProgressBar.emit(35)
 
         pt = ()
@@ -1089,9 +1089,9 @@ class ClasterizationCalculator(QThread):
         clustersString +='\nNoise\n'
         for noiceDoc in noiseDocs:
             clustersString += str(noiceDoc) + ';'
-        writeStringToFile(clustersString.replace('\n ', '\n'), output_dir + 'Clusters.csv')
+        writeStringToFile(clustersString.replace('\n ', '\n'), output_dir + 'Clusters.csv', False)
         stepsString+='\n\n' + clustersString
-        writeStringToFile(stepsString.replace('\n ', '\n'), output_dir + 'Steps.csv')
+        writeStringToFile(stepsString.replace('\n ', '\n'), output_dir + 'Steps.csv', False)
         self.signals.UpdateProgressBar.emit(100)
 
     def C3M(self):
@@ -1114,7 +1114,7 @@ class ClasterizationCalculator(QThread):
         df_string = df_string + "Слово;Используется в документах\n"
         for key, value in t_all.items():
             df_string = df_string + key + ';' + str(value) + '\n'
-        writeStringToFile(df_string.replace('\n ', '\n'), output_dir + 'df.csv')
+        writeStringToFile(df_string.replace('\n ', '\n'), output_dir + 'df.csv', False)
 
         # Вычисление бинарных весов терминов в документах
         W = []
@@ -1147,7 +1147,7 @@ class ClasterizationCalculator(QThread):
         # Первая строка - список номеров документов
         # Последующие строки предваряются номером документа,
         # для которого рассчитаны коэффициенты
-        writeStringToFile('\n'.join([';'.join([''] + ["d" + str(1 + num) for num in range(len(C))])] + [';'.join(["d" + str(d + 1)] + [str(cover).replace('.',',') for cover in dCovers]) for d,dCovers in enumerate(C)]), output_dir + 'CoverMatrix.csv')
+        writeStringToFile('\n'.join([';'.join([''] + ["d" + str(1 + num) for num in range(len(C))])] + [';'.join(["d" + str(d + 1)] + [str(cover).replace('.',',') for cover in dCovers]) for d,dCovers in enumerate(C)]), output_dir + 'CoverMatrix.csv', False)
 
         # Количество кластеров
         nc = 0
@@ -1160,7 +1160,7 @@ class ClasterizationCalculator(QThread):
         P = []
         for i in range(len(C)):
             P.append(C[i][i] * (1 - C[i][i]) * sum(W[i]))
-        writeStringToFile('\n'.join(';'.join([str(1 + index), str(k).replace('.',',')]) for index,k in enumerate(P)), output_dir + 'SeedPower.csv')
+        writeStringToFile('\n'.join(';'.join([str(1 + index), str(k).replace('.',',')]) for index,k in enumerate(P)), output_dir + 'SeedPower.csv', False)
 
         # Выбрать nc документов с наибольшей затравочной силой - "затравки"
         # Все затравки должны различаться между собой
@@ -1186,7 +1186,7 @@ class ClasterizationCalculator(QThread):
                         del(s[minSeedPower])
                         s[index] = p
                         minSeedPower = min(s, key = lambda key: s[key])
-        writeStringToFile('\n'.join(';'.join([str(1 + key), str(value).replace('.',',')]) for key, value in s.items()), output_dir + 'Seeds.csv')
+        writeStringToFile('\n'.join(';'.join([str(1 + key), str(value).replace('.',',')]) for key, value in s.items()), output_dir + 'Seeds.csv', False)
 
         # Формирование кластеров
         # Каждый документ, не являющийся затравочным,
@@ -1211,7 +1211,7 @@ class ClasterizationCalculator(QThread):
                         cluster.append(d)
 
         # Вывод результирующего набора кластеров
-        writeStringToFile('\n'.join(';'.join(['Cluster' + str(1 + index)] + [str(1 + d) for d in cluster]) for index, cluster in enumerate(clusters)), output_dir + 'clusters.csv')
+        writeStringToFile('\n'.join(';'.join(['Cluster' + str(1 + index)] + [str(1 + d) for d in cluster]) for index, cluster in enumerate(clusters)), output_dir + 'clusters.csv', False)
 
     @staticmethod
     def trainCoeff(t):
@@ -1252,7 +1252,7 @@ class ClasterizationCalculator(QThread):
         df_string = df_string + "Слово;Используется в документах\n"
         for key, value in t_all.items():
             df_string = df_string + key + ';' + str(value) + '\n'
-        writeStringToFile(df_string.replace('\n ', '\n'), output_dir + 'df.csv')
+        writeStringToFile(df_string.replace('\n ', '\n'), output_dir + 'df.csv', False)
 
         W = [[0 for x in range(len(t_all))] for y in range(len(texts))]
         print('len(texts)=' + str(len(texts)))

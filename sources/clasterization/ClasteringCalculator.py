@@ -150,7 +150,7 @@ class ClasteringCalculator(QThread):
     def calculate_and_write_tf_idf(self, out_filename, input_texts, norm='l2', is_smooth_idf=True, sublinear_tf=False):
         idf_vectorizer = TfidfVectorizer(smooth_idf=is_smooth_idf, norm=norm, sublinear_tf=sublinear_tf)
         tf_idf_matrix = idf_vectorizer.fit_transform(input_texts)
-        feature_names = idf_vectorizer.get_feature_names_out()
+        feature_names = idf_vectorizer.get_feature_names()
 
         matrix_output_s = 'Слово'
         for filename in self.short_filenames:
