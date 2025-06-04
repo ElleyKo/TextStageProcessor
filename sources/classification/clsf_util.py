@@ -61,7 +61,99 @@ def makeFileList(root_path = 'input_files/classification/', fread = True, fproce
 
     return(out, type_data, split)
 
+def collectFilesToDir(dir: str):
+    """
+    Собирает данные из файлов в указанной директории и её поддиректориях,
+    разделяя их на тестовую и тренировочную выборки.
 
+    Args:
+        dir (str): Путь к корневой директории с данными.
+
+    Returns:
+        tuple: Два словаря (test_data, train_data), содержащие данные для тестовой и тренировочной выборок.
+               Каждый словарь имеет структуру:
+               {
+                   'index': [int],       # порядковый номер файла
+                   'text': [str],        # содержимое файла
+                   'class': [str],       # имя класса (название поддиректории)
+                   'category': [int]     # числовой идентификатор класса
+               }
+    """
+
+    # Инициализация словарей для хранения данных тестовой и тренировочной выборок
+    test_data = {
+        'index': [],  # список индексов файлов (порядковые номера)
+        'text': [],  # список текстов из файлов
+        'class': [],  # список классов (имена поддиректорий)
+        'category': [],  # список числовых категорий (уникальные ID классов)
+    }
+    train_data = {
+        'index': [],
+        'text': [],
+        'class': [],
+        'category': [],
+    }
+
+    # Словари для сопоставления имени класса с числовым идентификатором категории
+    test_category_mapping = {}  # для тестовых данных
+    train_category_mapping = {}  # для тренировочных данных
+
+    # Счётчики для генерации уникальных категорий
+    test_category_counter = 0  # для тестовых данных
+    train_category_counter = 0  # для тренировочных данных
+
+    # Рекурсивный обход директории dir и всех её поддиректорий
+    for root, dirs, files in os.walk(dir):
+        # Обработка файлов из тестовой выборки (если путь содержит 'test')
+        if 'test' in root:
+            for file in files:
+                # Получаем имя класса (название текущей поддиректории)
+                class_name = os.path.basename(root)
+
+                # Если класс встречается впервые, добавляем его в словарь категорий
+                if class_name not in test_category_mapping:
+                    test_category_mapping[class_name] = test_category_counter
+                    test_category_counter += 1
+
+                # Получаем числовой идентификатор категории
+                category = test_category_mapping[class_name]
+
+                # Выводим имя обрабатываемого файла (для логгирования)
+                print(f'Обработка тестового файла: {file}')
+
+                # Читаем содержимое файла
+                with open(f'{root}/{file}', 'r', encoding='utf-8') as inFile:
+                    text = inFile.read()
+
+                # Добавляем данные в словарь test_data
+                test_data['index'].append(len(test_data['index']))  # индекс = текущая длина списка
+                test_data['text'].append(text)
+                test_data['class'].append(class_name)
+                test_data['category'].append(category)
+
+        # Обработка файлов из тренировочной выборки (если путь содержит 'train')
+        elif 'train' in root:
+            for file in files:
+                # Аналогичная обработка, но для тренировочных данных
+                class_name = os.path.basename(root)
+
+                if class_name not in train_category_mapping:
+                    train_category_mapping[class_name] = train_category_counter
+                    train_category_counter += 1
+
+                category = train_category_mapping[class_name]
+                print(f'Обработка тренировочного файла: {file}')
+
+                with open(f'{root}/{file}', 'r', encoding='utf-8') as inFile:
+                    text = inFile.read()
+
+                train_data['index'].append(len(train_data['index']))
+                train_data['text'].append(text)
+                train_data['class'].append(class_name)
+                train_data['category'].append(category)
+
+    # Возвращаем два словаря: для тестовых и тренировочных данных
+    return test_data, train_data
 
 #чтение путей файлов и классов
 def makeFileListLib(root_path = 'input_files/classification/', fread = True, fprocess = True):

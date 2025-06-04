@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import sys
-import pymorphy2
 from matplotlib import rc
 
 from sources.TextClassificationLib import DialogClassificationLib
+from sources.bert.DialogBertClassifier import DialogBertClassifier
 from sources.utils import *
 
-
 # Для корректного отображение шрифтов на графиках в Windows
-if(os.name != 'posix'):
+if (os.name != 'posix'):
     font = {'family': 'Verdana',
             'weight': 'normal'}
     rc('font', **font)
@@ -20,8 +18,7 @@ input_dir = configurations.get("input_files_directory", "input_files") + "/"
 output_dir = configurations.get("output_files_directory", "output_files") + "/"
 stop_words_filename = configurations.get("stop_words_file", "sources/russian_stop_words.txt")
 
-
-from PyQt5.QtWidgets import QMainWindow, QSizePolicy, QSpacerItem, QFileDialog, QPushButton
+from PyQt5.QtWidgets import QMainWindow, QSizePolicy, QSpacerItem, QPushButton
 from sources.XiSquare import *
 from sources.Word2VecNew.DialogWord2VecMaker import *
 from sources.TextClasterization import *
@@ -31,7 +28,6 @@ from sources.TextLSA import *
 from sources.TextDecomposeAndRuleApply import *
 from sources.AnnotationMaker import *
 from sources.FastText.DialogFastTextMaker import *
-
 
 if not os.path.exists(input_dir):
     os.makedirs(input_dir)
@@ -44,7 +40,7 @@ morph = pymorphy2.MorphAnalyzer()
 
 # Класс главного окна
 class MainWindow(QMainWindow):
-    
+
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -92,7 +88,11 @@ class MainWindow(QMainWindow):
         button_fastText.setMinimumHeight(32)
         button_fastText.clicked.connect(self.makeFastText)
 
-        spacer = QSpacerItem(20,40,QSizePolicy.Minimum,QSizePolicy.Expanding)
+        button_bert = QPushButton("BERT")
+        button_bert.setMinimumHeight(32)
+        button_bert.clicked.connect(self.makeBert)
+
+        spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         vbox = QVBoxLayout()
         vbox.addWidget(button_clasterization)
@@ -105,19 +105,20 @@ class MainWindow(QMainWindow):
         vbox.addWidget(button_annotation)
         vbox.addWidget(button_w2v)
         vbox.addWidget(button_fastText)
+        vbox.addWidget(button_bert)
         vbox.addItem(spacer)
 
         widget = QWidget();
         widget.setLayout(vbox);
         self.setCentralWidget(widget);
         self.setGeometry(300, 300, 480, 320)
-        self.setWindowTitle('Этапный текстовый процессор')    
+        self.setWindowTitle('Этапный текстовый процессор')
         self.show()
 
     def clasterization(self):
         print("Кластеризация")
         filenames = getFilenamesFromUserSelection(input_dir + 'clasterization')
-        if(filenames != None):
+        if (filenames != None):
             dialogConfigClasterization = DialogConfigClasterization(filenames, morph, configurations, self)
             self.hide()
             dialogConfigClasterization.destroyed.connect(self.show)
@@ -126,7 +127,7 @@ class MainWindow(QMainWindow):
     def clastering(self):
         print("Кластеризация (LIB)")
         filenames = getFilenamesFromUserSelection(input_dir + 'clasterization')
-        if(filenames != None):
+        if (filenames != None):
             dialogConfigClastering = DialogClastering(filenames, morph, configurations, self)
             self.hide()
             dialogConfigClastering.destroyed.connect(self.show)
@@ -135,7 +136,7 @@ class MainWindow(QMainWindow):
     def classification(self):
         print("Классификация")
         dirname = getDirFromUserSelection(input_dir + 'classification')
-        if(dirname != None):
+        if (dirname != None):
             dialogConfigClassification = DialogConfigClassification(dirname, morph, configurations, self)
             self.hide()
             dialogConfigClassification.destroyed.connect(self.show)
@@ -144,7 +145,7 @@ class MainWindow(QMainWindow):
     def classification_lib(self):
         print("Классификация (LIB)")
         dirname = getDirFromUserSelection(input_dir + 'classification')
-        if(dirname != None):
+        if (dirname != None):
             dialogClassificationLib = DialogClassificationLib(dirname, morph, configurations, self)
             self.hide()
             dialogClassificationLib.destroyed.connect(self.show)
@@ -153,7 +154,7 @@ class MainWindow(QMainWindow):
     def makeLSA(self):
         print("LSA")
         filenames = getFilenamesFromUserSelection(input_dir)
-        if(filenames != None):
+        if (filenames != None):
             dialogConfigLSA = DialogConfigLSA(filenames, morph, configurations, self)
             self.hide()
             dialogConfigLSA.destroyed.connect(self.show)
@@ -162,7 +163,7 @@ class MainWindow(QMainWindow):
     def analyze_and_rule_apply(self):
         print("Анализ и применение правил вывода")
         filenames = getFilenamesFromUserSelection()
-        if(filenames != None):
+        if (filenames != None):
             dialogConfigDRA = DialogConfigDRA(filenames, morph, configurations, self)
             self.hide()
             dialogConfigDRA.destroyed.connect(self.show)
@@ -171,7 +172,7 @@ class MainWindow(QMainWindow):
     def makeXiSquare(self):
         print("Рассчет критериев для выделения термов")
         filename = getFilenameFromUserSelection("CSV Files (*.csv)", input_dir)
-        if(filename != None):
+        if (filename != None):
             dialogXiSquare = DialogXiSquare(filename, morph, configurations, self)
             self.hide()
             dialogXiSquare.destroyed.connect(self.show)
@@ -202,6 +203,14 @@ class MainWindow(QMainWindow):
         dialogFastTextMaker.destroyed.connect(self.show)
         dialogFastTextMaker.exec_()
 
+    def makeBert(self):
+        print("BERT")
+        dirname = getDirFromUserSelection(input_dir + 'classification')
+        if (dirname != None):
+            dialog_bert_classifier = DialogBertClassifier(dirname, morph, configurations, self)
+            self.hide()
+            dialog_bert_classifier.destroyed.connect(self.show)
+            dialog_bert_classifier.exec_()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

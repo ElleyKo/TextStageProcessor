@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogBertClassifier</class>
+ <widget class="QDialog" name="DialogBertClassifier">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>BERT классификатор</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayoutMain">
+   <property name="spacing">
+    <number>8</number>
+   </property>
+   <property name="margin">
+    <number>12</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Каталог с входными файлами:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="lineEditInputDir">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>input_files/classification</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab_bert">
+      <attribute name="title">
+       <string>BERT</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Настройки алгоритма BERT</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QCheckBox" name="checkCreateModel">
+            <property name="text">
+             <string>Создать новую модель</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QWidget" name="existingModelGroup">
+            <layout class="QVBoxLayout" name="verticalLayoutExisting">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayoutModel">
+               <item>
+                <widget class="QLabel" name="labelModelPath">
+                 <property name="text">
+                  <string>Путь к модели:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="lineModelPath"/>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnSelectModel">
+                 <property name="text">
+                  <string>Выбрать</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkFineTune">
+            <property name="text">
+             <string>Дообучить существующую модель</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayoutFineTune">
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayoutEpochs">
+            <item>
+             <widget class="QLabel" name="label_count_epoch">
+              <property name="text">
+               <string>Эпох при обучении:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spin_box_count_epoch">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>100</number>
+              </property>
+              <property name="value">
+               <number>1</number>
+              </property>
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_results">
+      <attribute name="title">
+       <string>Результаты</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayoutResults">
+       <item>
+        <widget class="QLabel" name="labelMetrics">
+         <property name="text">
+          <string>Метрики классификации:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="tableMetrics">
+         <property name="columnCount">
+          <number>4</number>
+         </property>
+         <property name="rowCount">
+          <number>0</number>
+         </property>
+         <property name="horizontalHeaderLabels">
+          <stringlist>
+           <string>Accuracy</string>
+           <string>Precision</string>
+           <string>Recall</string>
+           <string>F1-Score</string>
+          </stringlist>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelConfusionMatrix">
+         <property name="text">
+          <string>Распределение по классам:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="tableConfusionMatrix">
+         <property name="columnCount">
+          <number>0</number>
+         </property>
+         <property name="rowCount">
+          <number>0</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="checkBoxNeedPreprocessing">
+     <property name="text">
+      <string>Производить предварительную обработку</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextEdit" name="textEdit">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="buttonClassify">
+     <property name="text">
+      <string>Классифицировать</string>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
