@@ -443,7 +443,10 @@ def makePreprocessing(filenames, morph, configurations, additional_output=None):
 
 def checkAdditionalOutput(additional_output, text):
     if additional_output:
-        additional_output.append(text)
+        if hasattr(additional_output, 'emit'):
+            additional_output.emit(text)
+        else:
+            additional_output.append(text)
 
 # Для алгоритмов не требующих нормализации, удаления стоп-слов каких-либо модификаций слов
 def makeFakePreprocessing(filenames):

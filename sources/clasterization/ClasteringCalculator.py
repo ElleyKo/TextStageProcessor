@@ -8,7 +8,7 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtCore import QThread
 from PyQt5.QtCore import pyqtSignal
 
-import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 from sklearn.cluster import AffinityPropagation
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.cluster import Birch
@@ -58,6 +58,7 @@ class ClasteringCalculator(QThread):
         self.need_tf_idf_formula = False
         self.first_call = True
         self.texts = []
+        self.result_figure = Figure()
 
     def set_method_index(self, method_name):
         self.method = method_name
@@ -68,7 +69,7 @@ class ClasteringCalculator(QThread):
         if self.first_call:
             if self.need_preprocessing:
                 self.signals.PrintInfo.emit("Препроцессинг...")
-                self.texts = makePreprocessing(self.filenames, self.morph, self.configurations, self.textEdit)
+                self.texts = makePreprocessing(self.filenames, self.morph, self.configurations, self.signals.PrintInfo)
             else:
                 self.signals.PrintInfo.emit("Препроцессинг - пропускается")
                 self.texts = makeFakePreprocessing(self.filenames)
@@ -182,20 +183,22 @@ class ClasteringCalculator(QThread):
         return result_msg
 
     def draw_clusters_plot(self, X, predict_result, short_filenames):
-        plt.subplot(111)
+        fig = Figure()
+        ax = fig.add_subplot(111)
         colors = np.array([x for x in 'bgrcmykbgrcmykbgrcmykbgrcmyk'])
         colors = np.hstack([colors] * 20)
-        plt.scatter(X[:, 0], X[:, 1], color=colors[predict_result].tolist(), s=50)
+        ax.scatter(X[:, 0], X[:, 1], color=colors[predict_result].tolist(), s=50)
 
         for label, x, y in zip(short_filenames, X[:, 0], X[:, 1]):
-            plt.annotate(
+            ax.annotate(
                 label,
                 xy=(x, y), xytext=(-20, 20),
                 textcoords='offset points', ha='right', va='bottom',
                 arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
-        plt.xticks(())
-        plt.yticks(())
-        plt.grid()
+        ax.set_xticks(())
+        ax.set_yticks(())
+        ax.grid(True)
+        self.result_figure = fig
 
     def make_k_means_clustering(self, short_filenames, input_texts):
 

@@ -1,0 +1,13 @@
+
+Корпус:
+	case_16_case_for_gaming_pc.txt
+	case_17_bottom_psu.txt
+	case_18_cleaning_maintenance.txt
+	case_19_materials_finish.txt
+	case_20_long_term_case.txt
+Ноутбук:
+	notebook_16_student_laptop.txt
+	notebook_17_home_multimedia.txt
+	notebook_18_linux_compatibility.txt
+	notebook_19_used_laptop.txt
+	notebook_20_long_term_choice.txt

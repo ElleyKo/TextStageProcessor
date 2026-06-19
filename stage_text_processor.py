@@ -1,10 +1,31 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import torch # импорт необходимо сделать раньше PyQt
+import inspect
+import warnings
+from collections import namedtuple
+
+from sources.T5 import DialogT5Classsification
+
+warnings.filterwarnings(
+    "ignore",
+    message="pkg_resources is deprecated as an API.*",
+    category=UserWarning,
+)
+
+# pymorphy2 still calls inspect.getargspec(), which was removed from Python 3.11.
+if not hasattr(inspect, "getargspec"):
+    ArgSpec = namedtuple("ArgSpec", "args varargs keywords defaults")
+
+    def getargspec(func):
+        spec = inspect.getfullargspec(func)
+        return ArgSpec(spec.args, spec.varargs, spec.varkw, spec.defaults)
+
+    inspect.getargspec = getargspec
 
 from matplotlib import rc
 
 from sources.TextClassificationLib import DialogClassificationLib
-from sources.bert.DialogBertClassifier import DialogBertClassifier
 from sources.utils import *
 
 # Для корректного отображение шрифтов на графиках в Windows
@@ -27,7 +48,6 @@ from sources.TextClastering import *
 from sources.TextLSA import *
 from sources.TextDecomposeAndRuleApply import *
 from sources.AnnotationMaker import *
-from sources.FastText.DialogFastTextMaker import *
 
 if not os.path.exists(input_dir):
     os.makedirs(input_dir)
@@ -92,6 +112,10 @@ class MainWindow(QMainWindow):
         button_bert.setMinimumHeight(32)
         button_bert.clicked.connect(self.makeBert)
 
+        button_t5 = QPushButton("T5 классификация")
+        button_t5 .setMinimumHeight(32)
+        button_t5 .clicked.connect(self.makeT5)
+
         spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         vbox = QVBoxLayout()
@@ -106,6 +130,7 @@ class MainWindow(QMainWindow):
         vbox.addWidget(button_w2v)
         vbox.addWidget(button_fastText)
         vbox.addWidget(button_bert)
+        vbox.addWidget(button_t5)
         vbox.addItem(spacer)
 
         widget = QWidget();
@@ -198,6 +223,12 @@ class MainWindow(QMainWindow):
 
     def makeFastText(self):
         print("FastText")
+        try:
+            from sources.FastText.DialogFastTextMaker import DialogFastTextMaker
+        except ModuleNotFoundError as error:
+            QMessageBox.critical(self, "FastText", "FastText dependencies are not installed:\n{0}".format(error))
+            return
+
         dialogFastTextMaker = DialogFastTextMaker(input_dir, morph, configurations, self)
         self.hide()
         dialogFastTextMaker.destroyed.connect(self.show)
@@ -205,12 +236,28 @@ class MainWindow(QMainWindow):
 
     def makeBert(self):
         print("BERT")
+        try:
+            from sources.bert.DialogBertClassifier import DialogBertClassifier
+        except ModuleNotFoundError as error:
+            QMessageBox.critical(self, "BERT", "BERT dependencies are not installed:\n{0}".format(error))
+            return
+
         dirname = getDirFromUserSelection(input_dir + 'classification')
         if (dirname != None):
             dialog_bert_classifier = DialogBertClassifier(dirname, morph, configurations, self)
             self.hide()
             dialog_bert_classifier.destroyed.connect(self.show)
             dialog_bert_classifier.exec_()
+
+    def makeT5(self):
+        print("T5")
+        dirname = getDirFromUserSelection(input_dir + 'classification')
+        print(f'inputed dir name: {dirname}')
+        if (dirname != None):
+            self.form_window = DialogT5Classsification.Ui_Form(input_dir, dirname, morph, configurations, self)
+            self.form_window.show()
+            self.hide()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

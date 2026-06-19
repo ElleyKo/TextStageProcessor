@@ -231,7 +231,7 @@ class ClasterizationCalculator(QThread):
         if self.first_call:
             if self.need_preprocessing:
                 self.signals.PrintInfo.emit("Препроцессинг...")
-                self.texts = makePreprocessing(self.filenames, self.morph, self.configurations, self.textEdit)
+                self.texts = makePreprocessing(self.filenames, self.morph, self.configurations, self.signals.PrintInfo)
             else:
                 self.signals.PrintInfo.emit("Препроцессинг - пропускается")
                 self.texts = makeFakePreprocessing(self.filenames)

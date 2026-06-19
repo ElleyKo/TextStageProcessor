@@ -6,6 +6,7 @@ import math
 import copy
 import numpy as np
 import shutil
+import os
 
 from PyQt5.QtCore import QObject
 from PyQt5.QtCore import QThread
@@ -38,14 +39,10 @@ class ClassificationCalculator(QThread):
         self.input_dir = input_dir + '/'
         self.output_dir = output_dir + '/classification/'
 
-        if not os.path.exists(self.output_dir):
-            os.makedirs(self.output_dir)
-        clear_dir(self.output_dir)
-
         self.output_preprocessing_dir = self.output_dir + 'preprocessing/'
         self.first_call = True
-        if not os.path.exists(self.output_dir):
-            os.makedirs(self.output_dir)
+        os.makedirs(self.output_dir, exist_ok=True)
+        os.makedirs(self.output_preprocessing_dir, exist_ok=True)
         self.morph = morph
         self.configurations = configurations
         self.texts = []
@@ -61,6 +58,31 @@ class ClassificationCalculator(QThread):
         if last_slash_index != -1:
             self.input_dir_short = self.input_dir[last_slash_index+1:]
 
+    def _clear_output_dir(self, path):
+        os.makedirs(path, exist_ok=True)
+        clear_dir(path)
+
+    def _clear_output_file(self, path):
+        if os.path.exists(path):
+            os.remove(path)
+
+    def _prepare_preprocessing_outputs(self):
+        self._clear_output_dir(self.output_preprocessing_dir)
+        for filename in ('output_stage_1.txt', 'output_stage_2.txt', 'output_stage_3.txt', 'output_stage_4.csv'):
+            self._clear_output_file(self.output_dir + filename)
+
+    def _prepare_method_output_dir(self):
+        if self.method == ClassificationCalculator.METHOD_NAIVE_BAYES:
+            self._clear_output_dir(self.output_dir + 'nb_out/')
+        if self.method == ClassificationCalculator.METHOD_ROCCHIO:
+            self._clear_output_dir(self.output_dir + 'roc_out/')
+        if self.method == ClassificationCalculator.METHOD_KNN:
+            self._clear_output_dir(self.output_dir + 'knn_out/')
+        if self.method == ClassificationCalculator.METHOD_LLSF:
+            self._clear_output_dir(self.output_dir + 'llsf_out/')
+        if self.method == ClassificationCalculator.METHOD_ID3:
+            self._clear_output_dir(self.output_dir + 'id3_out/')
+
     def setMethod(self, method_name, arg_need_preprocessing):
         self.method = method_name
         self.need_preprocessing = arg_need_preprocessing
@@ -70,6 +92,7 @@ class ClassificationCalculator(QThread):
 
         # Делаем препроцессинг 1 раз
         if self.first_call and self.need_preprocessing:
+            self._prepare_preprocessing_outputs()
             self.signals.PrintInfo.emit("Препроцессинг...")
             makePreprocessingForAllFilesInFolder(self.configurations,
                                                  self.input_dir,
@@ -79,6 +102,7 @@ class ClassificationCalculator(QThread):
         else:
             self.signals.PrintInfo.emit("Препроцессинг - пропускается")
         self.signals.UpdateProgressBar.emit(10)
+        self._prepare_method_output_dir()
 
         if self.need_preprocessing:
             self.method_input_dir = self.output_preprocessing_dir + self.input_dir_short + '/'

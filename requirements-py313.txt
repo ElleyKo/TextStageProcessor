@@ -1,0 +1,18 @@
+setuptools<81
+docopt==0.6.2
+PyQt5==5.15.11
+matplotlib==3.10.8
+numpy==2.4.4
+pandas==2.3.3
+scipy==1.17.1
+scikit-learn==1.8.0
+gensim==4.4.0
+pymorphy2==0.9.1
+pymorphy2-dicts==2.4.393442.3710985
+pymorphy2-dicts-ru==2.4.417127.4579844
+nltk==3.9.4
+stopwords==1.0.2
+
+# Optional features:
+# - FastText requires a compatible fasttext package/wheel.
+# - BERT requires torch and transformers.

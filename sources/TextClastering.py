@@ -18,7 +18,6 @@ from sklearn.cluster import DBSCAN
 from PyQt5.QtWidgets import QDialog, QMessageBox, QTextEdit
 from PyQt5 import QtCore, QtGui, uic
 import matplotlib
-import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg as FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
 matplotlib.use('Qt5Agg')
 
@@ -77,7 +76,7 @@ class DialogClastering(QDialog):
         self.tabWidget.setEnabled(True)
         self.textEdit.append('Выполнено за ' + self.profiler.stop() + ' с.')
         QApplication.restoreOverrideCursor()
-        self.addfig(plt.gcf())
+        self.addfig(self.calculator.result_figure)
         self.startMethod.setEnabled(True)
         self.checkBoxNeedCalculateTFIDF.setEnabled(True)
         self.tfIdfLibParamsWidget.setEnabled(self.checkBoxNeedCalculateTFIDF.isChecked())
@@ -90,8 +89,7 @@ class DialogClastering(QDialog):
         self.tabWidget.setEnabled(False)
 
         self.textEdit.setText("")
-        plt.cla()
-        plt.clf()
+        self.addfig(Figure())
 
         self.calculator.set_method_index(self.tabWidget.currentIndex())
 
