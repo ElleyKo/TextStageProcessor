@@ -32,10 +32,12 @@ class Ui_Form(QMainWindow):
         self.model = cm.T5TextClassifyModel()
         self.model.BATCH_SYMBOLS = 1000
         self.model.MODEL_PATH = 'SSD_HDD_v5'
-        self.model.IS_LOAD_PRETRAINED = True
+        self.model.IS_LOAD_PRETRAINED = False
+        if(self.model.IS_LOAD_PRETRAINED):
+            self.model.load_model()
         self.model.load_data_pd(data_type='test', folder=self.dirpath)
         self.textEditFilesDisplay.setText(f"загружено файлов: {len(self.model.test_data_df)}")
-        self.model.load_model()
+        
 
 
 
