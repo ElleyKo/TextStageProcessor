@@ -12,7 +12,7 @@ class T5TextClassifyModel():
     MODEL_NAME = 'SSD_HDD_v5.1'
     MODEL_NAME_2 = 'SSD_HDD_test_1'
     # загружать предобученную или загрузить свежую
-    IS_LOAD_PRETRAINED = True
+    IS_LOAD_PRETRAINED = False
     # скачать свежую модель, сохранить и выйти
     IS_SAVE_ONLY = False
     # нужно ли собирать метрики для статистики  при обучении
